@@ -9,8 +9,8 @@
 
 const char *ssid = "i2r";  // 와이파이 이름
 const char *pass = "00000000";      // 와이파이 비밀번호
-const char *thingId = "abc";          // 사물 이름 (thing ID)
-const char *host = "a8i4lgiqa43pw-ats.iot.us-west-2.amazonaws.com"; // AWS IoT Core 주소
+const char *thingId = "abc";          // 사물 이름 (thing ID) 
+const char *host = "**********-ats.iot.us-west-2.amazonaws.com"; // AWS IoT Core 주소
 
 // 사물 인증서 (파일 이름: xxxxxxxxxx-certificate.pem.crt)
 const char cert_str[] PROGMEM = R"EOF(
@@ -31,8 +31,6 @@ DwEB/wQEAwIHgDANBgkqhkiG9w0BAQsFAAOCAQEApPL5ZHJyufhZOcvT8wcwSzMg
 MasR3yJBjFfBjrOq/TvFBccoke7CEo6jDT5ruXiQFKXiR4TlvWJsOzjF/RHyfPz1
 QPMoVWtmKrIZP255ji9J9WIcm5oRREg7MHEod9ml+KNXC+Ro0+6RZ9ABa4zTj6mF
 kj+3iMB5tr3b45ClhREh3o0g8qGYJyrz/rUksfMwNI6ZWsrHGkb2uRbHJ6Pzj+ni
-R24DpUltoH7FOiAKmpE87tomNE+uNbqHRCxIkZYaXoWghNeAtrV7xoKzWQzAVUuX
-nZBSbXq1UfXOIY/W8aORlIL8V05GK9u87lMKu0vWXxhZi7swAIBpNOhK2jCB7g==
 -----END CERTIFICATE-----
 )EOF";
 // 사물 인증서 프라이빗 키 (파일 이름: xxxxxxxxxx-private.pem.key)
@@ -61,8 +59,6 @@ zd7rGHSM5Ybbt8ykshjN6m4hgErGTgMVKZio8HFYSIwm48MxUz620cO+ftZcY4dK
 6HcugtnjZa03XjegMDQwFpN6kWxgYLoXiaoWxUMzvkBP53iStXShIOjxzt5X+8hd
 7dqcAGSPTYxf7P0aDDaMCZWDYh1OAoKU7JSQVe/R0i4LLFBl+HJUSfd42U6hnp2v
 BJnILQKBgCE1HGiEUC5RQ9O0e+se1z47M3D2S7T87v2tdlnXLSuLXVmBNydwER68
-JpkKflIpqFrN7Fw3tiOlMUiboJW8CXv9nJPEI3xJjN3e+6pZlrkrtH+R52v6x9vp
-W1OYpX+3mvHMKPyU5KX/dAvREE+4piqThqEECYILfhswfixsEuLJ
 -----END RSA PRIVATE KEY-----
 )EOF";
 // Amazon Trust Services(ATS) 엔드포인트 CA 인증서 (서버인증 > "RSA 2048비트 키: Amazon Root CA 1" 다운로드)
@@ -84,8 +80,6 @@ A4IBAQCY8jdaQZChGsV2USggNiMOruYou6r4lK5IpDB/G/wkjUu0yKGX9rbxenDI
 U5PMCCjjmCXPI6T53iHTfIUJrU6adTrCC2qJeHZERxhlbI1Bjjt/msv0tadQ1wUs
 N+gDS63pYaACbvXy8MWy7Vu33PqUXHeeE6V/Uq2V8viTO96LXFvKWlJbYK8U90vv
 o/ufQJVtMVT8QtPHRh8jrdkPSHCa2XV4cdFyQzR1bldZwgJcJmApzyMZFo6IQ6XU
-5MsI+yMRQ+hDKXJioaldXgjUkK642M4UwtBV8ob2xJNDd2ZhwLnoQdeXeGADbkpy
-rqXRfboQnoZsG4q5WTP468SQvvG5
 -----END CERTIFICATE-----
 )EOF";
 

@@ -172,6 +172,8 @@ void setup() {
   Serial.println("Certifications and key are set");
 
   setClock();
+  //client.setServer(host, 8883);
+  client.setCallback(callback);
 }
 
 long lastMsg = 0;

@@ -17,8 +17,8 @@ const char *ssid = "***";  // 와이파이 이름
 const char *pass = "***";      // 와이파이 비밀번호
 const char *thingId = "abc";          // 사물 이름 (thing ID) 
 const char *host = "*****"; // AWS IoT Core 주소
-const char* outTopic = "inTopic"; 
-const char* inTopic = "outTopic"; 
+const char* outTopic = "outTopic"; 
+const char* inTopic = "inTopic"; 
 
 
 // 사물 인증서 (파일 이름: xxxxxxxxxx-certificate.pem.crt)

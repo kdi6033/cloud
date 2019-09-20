@@ -1,7 +1,7 @@
 // Example of the different modes of the X.509 validation options
 // in the WiFiClientBearSSL object
-//
 // Jul 2019 by Taejun Kim at www.kist.ac.kr
+// AWS 인증서 만들기 참조 : https://youtu.be/_y6z8kreg00
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>

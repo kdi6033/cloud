@@ -25,6 +25,9 @@ char msg[50];
 int value = 0;
 String inputString;
 boolean stringComplete = false; 
+String sIP; //IP Address
+String sAP_ssid,sChipID; // mac address를 문자로 기기를 구분하는 기호로 사용
+char cAP_ssid[40],cChipID[40];
 
 
 // 사물 인증서 (파일 이름: xxxxxxxxxx-certificate.pem.crt)
@@ -145,6 +148,15 @@ void setup() {
   Serial.setDebugOutput(true);
   Serial.println();
   Serial.println();
+
+  //이름 자동으로 생성
+  uint8_t chipid[6]="";
+  WiFi.macAddress(chipid);
+  sprintf(cChipID,"%02x%02x%02x%02x%02x%02x%c",chipid[5], chipid[4], chipid[3], chipid[2], chipid[1], chipid[0],0);
+  sChipID=String(cChipID);
+  thingId=cChipID;
+  Serial.println(thingId);
+
 
   // We start by connecting to a WiFi network
   Serial.print("Connecting to ");

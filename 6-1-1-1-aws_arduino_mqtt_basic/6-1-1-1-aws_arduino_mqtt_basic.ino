@@ -1,7 +1,7 @@
 // Example of the different modes of the X.509 validation options
 // in the WiFiClientBearSSL object
+//
 // Jul 2019 by Taejun Kim at www.kist.ac.kr
-// AWS 인증서 만들기 참조 : https://youtu.be/_y6z8kreg00
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -15,10 +15,13 @@ JsonObject root;
 
 const char *ssid = "***";  // 와이파이 이름
 const char *pass = "***";      // 와이파이 비밀번호
-const char *thingId = "abc";          // 사물 이름 (thing ID) 
-const char *host = "*****"; // AWS IoT Core 주소
+const char *thingId = "***";          // 사물 이름 (thing ID) mac address로 자동 생성
+const char *host = "***.amazonaws.com"; // AWS IoT Core 주소
 const char* outTopic = "outTopic"; 
 const char* inTopic = "inTopic"; 
+
+String sChipID; // mac address를 문자로 기기를 구분하는 기호로 사용
+char cChipID[40];
 
 
 // 사물 인증서 (파일 이름: xxxxxxxxxx-certificate.pem.crt)
@@ -31,9 +34,6 @@ MTRaFw00OTEyMzEyMzU5NTlaMB4xHDAaBgNVBAMME0FXUyBJb1QgQ2VydGlmaWNh
 dGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7F1eU1Vtab4MHXzlx
 oH0DJelGYVFgDIja/d1VOb9vP/kjUKwBTINsJuccFGyXC1NFK23sVwHqwgPyyPl3
 6ssUYMsoHtyZ3D20Rw5LhDV3QfFK6BfI9oCKOfNdmzEEMCg9OkOPmtxcpjuNCF18
-tmpY8Fs2rP8kGWtf1YPQLPQl+quhoFDkuxkWkFrS/K1JhL4SF7KMuQ7BAHz6HZjt
-sKLWVkg4h46HXgRwnW2O/EJo46U6SyYfiZkmLVdZzprM8Mkt25/vNxffqzz7FPbP
-+vYIU58koyOT8PGSRjxyntuFbbm8rJBitwGu1/7IqRqkb3jyqcX3HqNQD1dTSjbr
 -----END CERTIFICATE-----
 )EOF";
 // 사물 인증서 프라이빗 키 (파일 이름: xxxxxxxxxx-private.pem.key)
@@ -49,9 +49,6 @@ sI1R318hlzmGtKlz4gx1CK4mq7Bsauo/zaxCJp121N0+RcfQBmeMPAvhiDQD2J/v
 xp7hsWGLXXxWLY6ZNgJ14Yo5VCC4NnsytsyNsDyQXH+JVT/p+ihmpIxOcnzjlGcf
 GUQD7sCk9yB0NZSd3H7mwTE2vY/fKbowRxSDBjpfBo07qIRu8s+1yBYB/qjeMk28
 Ckt/zd80AfUcxcmK98hIvYucCdbQuB9DAdf/Ii7ogZ5549RujF859j+ZAkDrUDVM
-ObmrGItBX9m1Bo3MKJpSYUkvt2WyGMLduMMN3/rANbzvlWMEww1NfBChQa3xAszn
-j/wSeDECgYEA2t5MOGR6xJVMCKeijr2PaRtorVTX2QyRu0RntNvDQ1hN2hijVGBU
-Jcmzl7gHIWdeKQ87z0A4zGPv6+uMkTCKcw7ZOhX/Lt+svOIR1IVSxMsWyuEtWpgk
 -----END RSA PRIVATE KEY-----
 
 )EOF";
@@ -64,8 +61,6 @@ b24gUm9vdCBDQSAxMB4XDTE1MDUyNjAwMDAwMFoXDTM4MDExNzAwMDAwMFowOTEL
 MAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEZMBcGA1UEAxMQQW1hem9uIFJv
 b3QgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJ4gHHKeNXj
 ca9HgFB0fW7Y14h29Jlo91ghYPl0hAEvrAIthtOgQ3pOsqTQNroBvo3bSMgHFzZM
-9O6II8c+6zf1tRn4SWiw3te5djgdYZ6k/oI2peVKVuRF4fn9tBb6dNqcmzU5L/qw
-
 -----END CERTIFICATE-----
 )EOF";
 
@@ -140,6 +135,13 @@ void setup() {
   Serial.setDebugOutput(true);
   Serial.println();
   Serial.println();
+
+  //이름 자동으로 생성
+  uint8_t chipid[6]="";
+  WiFi.macAddress(chipid);
+  sprintf(cChipID,"%02x%02x%02x%02x%02x%02x%c",chipid[5], chipid[4], chipid[3], chipid[2], chipid[1], chipid[0],0);
+  sChipID=String(cChipID);
+  thingId=cChipID;
 
   // We start by connecting to a WiFi network
   Serial.print("Connecting to ");

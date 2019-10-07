@@ -164,11 +164,12 @@ void setup() {
   Serial.println();
   Serial.println();
 
-    //이름 자동으로 생성
+  //이름 자동으로 생성
   uint8_t chipid[6]="";
   WiFi.macAddress(chipid);
   sprintf(cChipID,"%02x%02x%02x%02x%02x%02x%c",chipid[5], chipid[4], chipid[3], chipid[2], chipid[1], chipid[0],0);
   sChipID=String(cChipID);
+  thingId=cChipID;
   sAP_ssid=String(softAP_ssid)+sChipID;
   sAP_ssid.toCharArray(cAP_ssid,sAP_ssid.length()+1);
   softAP_ssid=&cAP_ssid[0];

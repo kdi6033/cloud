@@ -26,8 +26,8 @@ int value = 0;
 String inputString;
 boolean stringComplete = false; 
 String sIP; //IP Address
-String sAP_ssid,sChipID; // mac address를 문자로 기기를 구분하는 기호로 사용
-char cAP_ssid[40],cChipID[40];
+String sChipID; // mac address를 문자로 기기를 구분하는 기호로 사용
+char cChipID[40];
 
 
 // 사물 인증서 (파일 이름: xxxxxxxxxx-certificate.pem.crt)

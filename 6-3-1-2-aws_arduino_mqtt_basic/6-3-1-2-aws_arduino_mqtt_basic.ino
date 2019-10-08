@@ -16,9 +16,11 @@ StaticJsonDocument<200> doc;
 DeserializationError error;
 JsonObject root;
 
-char ssid[32] = "***";
-char password[32] = "***";
-const char *thingId = "abc";          // 사물 이름 (thing ID) 
+char ssid[32] = "";
+char password[32] = "";
+//const char *ssid = "***";  // 와이파이 이름
+//const char *pass = "***";      // 와이파이 비밀번호
+const char *thingId = "";          // 사물 이름 (thing ID) 
 const char *host = "***.amazonaws.com"; // AWS IoT Core 주소
 const char* outTopic = "outTopic"; 
 const char* inTopic = "inTopic"; 
@@ -60,7 +62,6 @@ IEluYy4gTD1TZWF0dGxlIFNUPVdhc2hpbmd0b24gQz1VUzAeFw0xOTA4MDIwNTI5
 MTRaFw00OTEyMzEyMzU5NTlaMB4xHDAaBgNVBAMME0FXUyBJb1QgQ2VydGlmaWNh
 dGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7F1eU1Vtab4MHXzlx
 oH0DJelGYVFgDIja/d1VOb9vP/kjUKwBTINsJuccFGyXC1NFK23sVwHqwgPyyPl3
-6ssUYMsoHtyZ3D20Rw5LhDV3QfFK6BfI9oCKOfNdmzEEMCg9OkOPmtxcpjuNCF18
 -----END CERTIFICATE-----
 )EOF";
 // 사물 인증서 프라이빗 키 (파일 이름: xxxxxxxxxx-private.pem.key)
@@ -75,6 +76,7 @@ YrcBrtf+yKkapG948qnF9x6jUA9XU0o26125SwIDAQABAoIBAARm6jKgSoP4N7cG
 sI1R318hlzmGtKlz4gx1CK4mq7Bsauo/zaxCJp121N0+RcfQBmeMPAvhiDQD2J/v
 xp7hsWGLXXxWLY6ZNgJ14Yo5VCC4NnsytsyNsDyQXH+JVT/p+ihmpIxOcnzjlGcf
 GUQD7sCk9yB0NZSd3H7mwTE2vY/fKbowRxSDBjpfBo07qIRu8s+1yBYB/qjeMk28
+Ckt/zd80AfUcxcmK98hIvYucCdbQuB9DAdf/Ii7ogZ5549RujF859j+ZAkDrUDVM
 -----END RSA PRIVATE KEY-----
 
 )EOF";
@@ -86,6 +88,8 @@ ADA5MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRkwFwYDVQQDExBBbWF6
 b24gUm9vdCBDQSAxMB4XDTE1MDUyNjAwMDAwMFoXDTM4MDExNzAwMDAwMFowOTEL
 MAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEZMBcGA1UEAxMQQW1hem9uIFJv
 b3QgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJ4gHHKeNXj
+ca9HgFB0fW7Y14h29Jlo91ghYPl0hAEvrAIthtOgQ3pOsqTQNroBvo3bSMgHFzZM
+9O6II8c+6zf1tRn4SWiw3te5djgdYZ6k/oI2peVKVuRF4fn9tBb6dNqcmzU5L/qw
 -----END CERTIFICATE-----
 )EOF";
 
@@ -227,16 +231,15 @@ void connectWifi() {
 
 
 void loop() {
-
-  if (!client.connected()) {
+  unsigned int s = WiFi.status();
+  if (!client.connected() && s==WL_CONNECTED) {
     reconnect();
   }
   client.loop();
 
   server.handleClient();
-  unsigned int s = WiFi.status();
   long now = millis();
-  if (s == 0 && now > (lastConnectTry + 60000) && strlen(ssid) > 0 ) {
+  if (s == WL_IDLE_STATUS && now > (lastConnectTry + 60000) && strlen(ssid) > 0 ) {
     lastConnectTry=now;
     Serial.println ( "Connect requested" );
     connectWifi();

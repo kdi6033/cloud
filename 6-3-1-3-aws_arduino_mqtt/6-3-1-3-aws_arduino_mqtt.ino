@@ -36,7 +36,9 @@ char msg[50];
 int value = 0;
 String inputString;
 boolean stringComplete = false; 
-int relayPower=0;
+int P40=0,P41=0,P42=0,P43=0;
+int P0[6]={0};
+int lastRead=0,autoRead=0;
 
 // Web server
 ESP8266WebServer server(80);
@@ -72,9 +74,6 @@ yPaAijnzXZsxBDAoPTpDj5rcXKY7jQhdfLZqWPBbNqz/JBlrX9WD0Cz0JfqroaBQ
 H4mZJi1XWc6azPDJLduf7zcX36s8+xT2z/r2CFOfJKMjk/DxkkY8cp7bhW25vKyQ
 YrcBrtf+yKkapG948qnF9x6jUA9XU0o26125SwIDAQABAoIBAARm6jKgSoP4N7cG
 sI1R318hlzmGtKlz4gx1CK4mq7Bsauo/zaxCJp121N0+RcfQBmeMPAvhiDQD2J/v
-xp7hsWGLXXxWLY6ZNgJ14Yo5VCC4NnsytsyNsDyQXH+JVT/p+ihmpIxOcnzjlGcf
-GUQD7sCk9yB0NZSd3H7mwTE2vY/fKbowRxSDBjpfBo07qIRu8s+1yBYB/qjeMk28
-Ckt/zd80AfUcxcmK98hIvYucCdbQuB9DAdf/Ii7ogZ5549RujF859j+ZAkDrUDVM
 -----END RSA PRIVATE KEY-----
 
 )EOF";
@@ -86,8 +85,6 @@ ADA5MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRkwFwYDVQQDExBBbWF6
 b24gUm9vdCBDQSAxMB4XDTE1MDUyNjAwMDAwMFoXDTM4MDExNzAwMDAwMFowOTEL
 MAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEZMBcGA1UEAxMQQW1hem9uIFJv
 b3QgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJ4gHHKeNXj
-ca9HgFB0fW7Y14h29Jlo91ghYPl0hAEvrAIthtOgQ3pOsqTQNroBvo3bSMgHFzZM
-9O6II8c+6zf1tRn4SWiw3te5djgdYZ6k/oI2peVKVuRF4fn9tBb6dNqcmzU5L/qw
 -----END CERTIFICATE-----
 )EOF";
 
@@ -100,6 +97,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial1.print((char)payload[i]);
   }
   Serial.println();
+  
   /*
   deserializeJson(doc,payload);
   root = doc.as<JsonObject>();
@@ -182,7 +180,11 @@ void setup() {
 
   /* Setup web pages: root, wifi config pages, SO captive portal detectors and not found. */
   server.on("/", handleRoot);
-  server.on("/onoff", handleOnOff);
+  server.on("/onoffP40", handleOnOffP40);
+  server.on("/onoffP41", handleOnOffP41);
+  server.on("/onoffP42", handleOnOffP42);
+  server.on("/onoffP43", handleOnOffP43);
+  server.on("/read", handleRead);
   server.on("/on", handleOn);
   server.on("/off", handleOff);
   server.on("/wifi", handleWifi);
@@ -209,7 +211,6 @@ void setupAp() {
   Serial.println(WiFi.softAPIP());
 }
 
-
 void connectWifi() {
   Serial.println("Connecting as wifi client...");
   WiFi.disconnect();
@@ -227,7 +228,6 @@ void connectWifi() {
   }
 }
 
-
 void loop() {
   unsigned int s = WiFi.status();
   if (!client.connected() && s==WL_CONNECTED) {
@@ -243,8 +243,16 @@ void loop() {
     connectWifi();
   }
   if (now - lastSerial > 500) {
-    serialMqttEvent();
     lastSerial = now;
+    serialMqttEvent();
+  }
+  if ((now - lastRead > 1000) && autoRead==1){
+    lastRead = now;
+    String s="";
+    s=char(5);
+    s+="00RSS0104%PW0";
+    s+=char(4);
+    Serial1.print(s);
   }
   /*
   if (now - lastMsg > 5000) {
@@ -262,9 +270,9 @@ void serialMqttEvent() {
   // print the string when a newline arrives:
   if (stringComplete) {
     Serial.println(inputString);
+    inputString.toCharArray(msg, inputString.length());
     //MQTT가 접속됬으면 메세지를 보낸다.
     if (client.connect(thingId)) {
-      inputString.toCharArray(msg, inputString.length());
       Serial.print("Publish message: ");
       Serial.println(msg);
       client.publish(outTopic, msg);
@@ -272,6 +280,17 @@ void serialMqttEvent() {
     // clear the string:
     inputString = "";
     stringComplete = false;
+    if(msg[3]=='R') {
+        byte inC=msg[13];
+        byte inC1=msg[12];
+        P0[0]=bitRead(inC,0);
+        P0[1]=bitRead(inC,1);
+        P0[2]=bitRead(inC,2);
+        P0[3]=bitRead(inC,3);
+        P0[4]=bitRead(inC1,0);
+        P0[5]=bitRead(inC1,1);
+        GoHome();
+    }
   }
   
   if(Serial.available() == false) 
@@ -283,4 +302,16 @@ void serialMqttEvent() {
     inputString += inChar;
   }
   stringComplete = true;
+}
+
+void plcOut() {
+  //int out=P40+P41*2+P42*4+P43*8;
+  String out =  String(P40+P41*2+P42*4+P43*8, HEX);
+  String s="";
+  s=char(5);
+  s+="00WSS0104%PW4000";
+  s+=out;
+  s+=char(4);
+  Serial1.print(s);
+  
 }

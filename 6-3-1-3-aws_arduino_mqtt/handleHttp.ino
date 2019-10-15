@@ -225,6 +225,7 @@ void handleWifiSave() {
   server.client().stop(); // Stop is needed because we sent no content length
   saveCredentials();
   connect = strlen(ssid) > 0; // Request WLAN connect with new credentials if there is a SSID
+  connectWifi();
 }
 
 /** Redirect to captive portal if we got a request for another domain. Return true in that case so the page handler do not try to handle the request again. */

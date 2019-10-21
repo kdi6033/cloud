@@ -121,6 +121,7 @@ void handleRead() {
     autoRead=0;
   else 
     autoRead=1;
+  GoHome();
 }
 
 void handleOnOffP41() {

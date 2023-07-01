@@ -1,0 +1,24 @@
+sudo apt update
+sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+sudo wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+
+echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
+sudo apt-get update
+sudo apt-get install libssl1.1
+sudo apt-get install -y mongodb-org
+
+mongod -version
+sudo systemctl start mongod
+sudo systemctl status mongod
+sudo systemctl enable mongod
+mongo
+
+– 원격접속을 위해 mongod.conf 파일 수정
+sudo nano /etc/mongod.conf
+   bind_ip = 0.0.0.0
+   port = 27017
+MongoDB Compass 다운로드 :  https://www.mongodb.com/try/download/community
+MongoDB & Compass 비밀번호 설정과 사용법 : https://youtu.be/ltLJx28tDOs

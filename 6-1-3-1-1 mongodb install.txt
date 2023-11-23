@@ -1,35 +1,20 @@
-2023년 11월 20일 chatGPT에 질문해 다음과 같이 설치 했습니다.
-AWS Ubuntu 인스턴스에서 MongoDB 7.0을 설치하는 과정은 다음 단계를 포함합니다:
+sudo apt update
+sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+sudo wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
 
-1. AWS 인스턴스 준비: AWS에 로그인하고 Ubuntu를 운영 체제로 사용하는 EC2 인스턴스를 시작합니다. 인스턴스에 SSH를 통해 접속합니다.
-
-2. 시스템 업데이트: 시스템 패키지를 최신 상태로 업데이트합니다. 이를 위해 다음 명령어를 사용합니다:
-$sudo apt-get update
-$sudo apt-get upgrade
-
-3. MongoDB 공식 GPG 키 추가: MongoDB의 공식 GPG 키를 시스템에 추가합니다. 이는 패키지의 무결성을 확인하는 데 사용됩니다. 다음 명령어를 실행합니다:
-$wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo apt-key add -
-
-4. MongoDB 저장소 추가: 시스템의 패키지 관리자에 MongoDB 저장소를 추가합니다. 이를 위해 다음과 같이 입력합니다:
-$echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
-
-5. 패키지 목록 업데이트: 새로운 저장소를 시스템 패키지 목록에 추가한 후, 목록을 업데이트합니다:
-$sudo apt-get update
-
-6. MongoDB 설치: 이제 MongoDB 7.0을 설치할 수 있습니다. 다음 명령어를 사용합니다:
-$sudo apt-get install -y mongodb-org
-
-7. MongoDB 서비스 시작 및 활성화: MongoDB 서비스를 시작하고 부팅 시 자동으로 실행되도록 설정합니다:
-$sudo systemctl start mongod
-$sudo systemctl enable mongod
-
-8. MongoDB 상태 확인: MongoDB가 제대로 설치되고 실행되고 있는지 확인합니다:
-$sudo systemctl status mongod
+echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
+sudo apt-get update
+sudo apt-get install libssl1.1
+sudo apt-get install -y mongodb-org
 
 mongod -version
 sudo systemctl start mongod
 sudo systemctl status mongod
 sudo systemctl enable mongod
+sudo systemctl restart mongod
 mongo
 
 – 원격접속을 위해 mongod.conf 파일 수정

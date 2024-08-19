@@ -4,7 +4,9 @@ Ubuntu에서 Node.js의 최신 버전을 설치하려면 다음 단계를 따라
 
 1-1. NodeSource PPA 추가
 NodeSource는 최신 버전의 Node.js를 제공하는 PPA(Personal Package Archive)를 운영하고 있습니다. 먼저, NodeSource PPA를 추가해야 합니다.
+----------------------------------------------------------------------
 curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+----------------------------------------------------------------------
 1-2. Node.js 설치
 PPA가 추가된 후, 다음 명령어를 사용하여 Node.js를 설치합니다:
 sudo apt-get install -y nodejs
